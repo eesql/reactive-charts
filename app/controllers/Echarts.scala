@@ -3,6 +3,12 @@ package controllers
 import play.api.libs.iteratee.{Enumerator, Iteratee}
 import play.api.libs.json.Json
 import play.api.mvc._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import scala.concurrent.duration._
+import javax.inject._
+import akka.pattern.ask
+import akka.actor._
+import actors._
 
 /**
   * Created by elainetuang on 6/16/16.
@@ -66,7 +72,7 @@ class Echarts extends Controller{
     List(180.3, 83.2), List(180.3, 83.2)
     )
 
-    Ok( Json.arr( dataList.map( l => Json.obj("data" -> l ) ) ) )
+    Ok( Json.obj("data" -> dataList ) )
 
     //NotImplemented
   }

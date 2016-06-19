@@ -167,8 +167,12 @@ var option = {
 
 myChart.setOption(option);
 
+
 $.get('/echarts/testdata').done(function(data) {
-    myChart.setOption(
+    //$("#stocks").html("<b>2333</b>")
+    //document.getElementById("stocks").innerHTML=data.data
+
+    myChart.setOption({
         series : [
             {
                             name:'男性',
@@ -188,7 +192,7 @@ $.get('/echarts/testdata').done(function(data) {
                             }
                         }
         ]
-    )
-})
+    })
+});
 
 }

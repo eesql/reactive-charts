@@ -13,4 +13,4 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 GET     /echarts                    controllers.Echarts.demo
 GET     /echarts/data               controllers.Echarts.maleData
-GET     /echarts/testdata           controllers.Echarts.testData
+GET     /echarts/testdata           controllers.FeedTest.controlActor
