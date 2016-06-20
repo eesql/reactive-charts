@@ -4,11 +4,13 @@ package controllers
 import play.api.mvc._
 import akka.actor._
 import javax.inject._
+
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import scala.concurrent.Future
 import play.api.libs.iteratee._
-import actors.demoActor
-import play.api.libs.json.{JsObject, Json}
+import actors.DemoActor._
+import actors.DemoActor
+import play.api.libs.json.Json
+import akka.pattern.ask
 
 
 /**
@@ -18,19 +20,21 @@ import play.api.libs.json.{JsObject, Json}
 @Singleton
 class FeedTest @Inject() (system: ActorSystem) extends Controller {
 
-  val demoActors = system.actorOf(demoActor.props)
+  val demoActor = system.actorOf(DemoActor.props)
+
+
 
   val dataToJson = Enumeratee.map[List[List[Double]]] {
     case (d) => Json.obj("data" -> d)
   }
 
-  def controlActor() = Action {
+  def controlActor() = Action.async {
+    (demoActor ? TestActor()).mapTo[List[List[Double]]].map { message =>
+      Ok(Json.obj("data" -> message))
+    }
 
-    val notifications: Enumerator[List[List[Double]]] = demoActor.notifications
-    val fNotifications =
-      notifications &> dataToJson
-
-    Ok.chunked(fNotifications).as(EVENT_STREAM)
   }
+
+
 
 }

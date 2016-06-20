@@ -168,7 +168,7 @@ var option = {
 myChart.setOption(option);
 
 
-$.get('/echarts/testdata').done(function(data) {
+$.get('/echarts/data').done(function(data) {
     //$("#stocks").html("<b>2333</b>")
     //document.getElementById("stocks").innerHTML=data.data
 
