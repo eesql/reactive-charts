@@ -35,6 +35,9 @@ class FeedTest @Inject() (system: ActorSystem) extends Controller {
 
   }
 
-
+  def clickActor() = Action {
+    demoActor ! updateDemo
+    Ok("Ok")
+  }
 
 }

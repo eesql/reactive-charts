@@ -6,12 +6,19 @@
 <head>
     <title>Reactive Stock News Dashboard</title>
     <link rel='stylesheet' href='@routes.Assets.at("lib/bootstrap/css/bootstrap.min.css")'>
-    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
-    <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+    <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/main.css")'>
+    <link rel="shortcut icon" type="image/png" href='@routes.Assets.at("images/favicon.png")'>
     <script type='text/javascript' src='@routes.Assets.at("lib/jquery/jquery.min.js")'></script>
 
     <script type='text/javascript' src='@routes.Assets.at("javascripts/echarts.min.js")'></script>
     <script type='text/javascript' src='@routes.Assets.at("javascripts/chart.js")'></script>
+
+    <script src="text/javascript">
+        $("#addsymbolform").submit (event) ->
+            event.preventDefault()
+            $.get("/echarts/democlick")
+            $("#addsymboltext").val("")
+    </script>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
