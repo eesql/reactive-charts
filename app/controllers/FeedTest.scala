@@ -1,17 +1,14 @@
 package controllers
 
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
 import play.api.mvc._
 import akka.actor._
 import javax.inject._
-
-import akka.pattern.ask
-import scala.concurrent.duration._
-
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import scala.concurrent.Future
+import play.api.libs.iteratee._
 import actors.demoActor
-import actors.demoActor._
-import akka.util.Timeout
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 
 
 /**
@@ -23,14 +20,17 @@ class FeedTest @Inject() (system: ActorSystem) extends Controller {
 
   val demoActors = system.actorOf(demoActor.props)
 
+  val dataToJson = Enumeratee.map[List[List[Double]]] {
+    case (d) => Json.obj("data" -> d)
+  }
 
+  def controlActor() = Action {
 
-  def controlActor() = Action.async {
-    implicit val timeout: Timeout = 5.seconds
+    val notifications: Enumerator[List[List[Double]]] = demoActor.notifications
+    val fNotifications =
+      notifications &> dataToJson
 
-    (demoActors ? updateDemo()).mapTo[List[List[Double]]].map {
-      message => Ok( Json.obj("data" -> message) )
-    }
+    Ok.chunked(fNotifications).as(EVENT_STREAM)
   }
 
 }

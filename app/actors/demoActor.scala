@@ -7,7 +7,14 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
 import java.util.Random
 
+import play.api.libs.iteratee.{Enumerator, Iteratee}
+import play.api.libs.iteratee.Concurrent
+import play.libs.Akka
+import akka.pattern.ask
+import akka.util.Timeout
+
 import scala.collection.immutable.HashSet
+import scala.concurrent.Future
 
 /**
   * Created by chad on 6/19/2016.
@@ -15,6 +22,14 @@ import scala.collection.immutable.HashSet
 
 object  demoActor {
   def props = Props[demoActor]
+
+  private lazy val ref =
+    Akka.system.actorOf(Props[demoActor])
+  implicit val timeout: Timeout = 5.seconds
+
+  def notifications(): Future[Enumerator[List[List[Double]]]] = {
+    (ref ? testActor()).mapTo[Enumerator[List[List[Double]]]]
+  }
 
   case class testActor()
   case class updateDemo()
@@ -29,9 +44,17 @@ class demoActor extends Actor {
 
   def receive = {
     case testActor() =>
-      sender() ! List(List(new Random().nextDouble()*100, new Random().nextDouble()*10))
+      sender() ! Feed.notifications
     case updateDemo() =>
-      demo = List(new Random().nextDouble()*100, new Random().nextDouble()*10)
-      watchers.foreach(_ ! testActor)
+      Feed.addData()
+  }
+
+  object Feed {
+
+    val (notifications, channel) = Concurrent.broadcast[List[List[Double]]]
+
+    def addData():Unit = {
+      channel.push(List(List(new Random().nextDouble()*100, new Random().nextDouble()*10)))
+    }
   }
 }
