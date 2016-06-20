@@ -42,7 +42,7 @@ class DemoActor extends Actor {
     case TestActor() =>
       sender() ! List(List(new Random().nextDouble()*100, new Random().nextDouble()*10))
     case updateDemo() =>
-      Feed.addData()
+      sender() ! TestActor
   }
 
   object Feed {
