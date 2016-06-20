@@ -7,44 +7,40 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
 import java.util.Random
 
-import play.api.libs.iteratee.{Enumerator, Iteratee}
+
 import play.api.libs.iteratee.Concurrent
 import play.libs.Akka
-import akka.pattern.ask
+
 import akka.util.Timeout
 
-import scala.collection.immutable.HashSet
-import scala.concurrent.Future
+
 
 /**
   * Created by chad on 6/19/2016.
   */
 
-object  demoActor {
-  def props = Props[demoActor]
+object DemoActor {
+
+  def props = Props[DemoActor]
 
   private lazy val ref =
-    Akka.system.actorOf(Props[demoActor])
+    Akka.system.actorOf(Props[DemoActor])
   implicit val timeout: Timeout = 5.seconds
 
-  def notifications(): Future[Enumerator[List[List[Double]]]] = {
-    (ref ? testActor()).mapTo[Enumerator[List[List[Double]]]]
-  }
 
-  case class testActor()
+  case class TestActor()
   case class updateDemo()
 }
 
-class demoActor extends Actor {
-  import demoActor._
+class DemoActor extends Actor {
+  import DemoActor._
 
-  var demo = List(0.0,0.0)
   val tick = context.system.scheduler.schedule(Duration.Zero, 1.seconds, self, updateDemo)
-  protected[this] var watchers: HashSet[ActorRef] = HashSet.empty[ActorRef]
+
 
   def receive = {
-    case testActor() =>
-      sender() ! Feed.notifications
+    case TestActor() =>
+      sender() ! List(List(new Random().nextDouble()*100, new Random().nextDouble()*10))
     case updateDemo() =>
       Feed.addData()
   }
