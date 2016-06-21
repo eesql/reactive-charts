@@ -13,12 +13,26 @@
     <script type='text/javascript' src='@routes.Assets.at("javascripts/echarts.min.js")'></script>
     <script type='text/javascript' src='@routes.Assets.at("javascripts/chart.js")'></script>
 
-    <script src="text/javascript">
-        $("#addsymbolform").submit (event) ->
-            event.preventDefault()
-            $.get("/echarts/democlick")
-            $("#addsymboltext").val("")
+    <script type="text/javascript">
+        $(document).ready(function() {
+        $("#addsymbolform").submit(function(e) {
+            e.preventDefault();
+            //alert("wtf");
+
+            $.get("/echarts/democlick").done(function(data) {
+                //alert("wtf");
+            });
+         });
+
+
+
+
+        });
+
     </script>
+
+
+
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -33,6 +47,7 @@
         </div>
     </div>
 
+
     <div id="stocks" class="container">
 
     </div>
@@ -40,6 +55,17 @@
     <div id="test" style="width: 1000px;height:600px;" class="container1">
 
     </div>
+
+    <script>
+    var source=new EventSource("/echarts/testdata");
+
+    source.onmessage=function(event)
+    {
+        document.getElementById("test").innerHTML+=event.data
+        updateChart(event.data);
+    };
+    </script>
+
 
     <script type="text/javascript">
        drawLine('test')

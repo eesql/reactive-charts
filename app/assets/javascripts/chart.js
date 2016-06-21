@@ -1,5 +1,30 @@
 // 基于准备好的dom，初始化echarts实例
 
+function updateChart(data) {
+
+        myChart.setOption({
+            series : [
+                {
+                                name:'男性',
+                                type:'scatter',
+                                data: data.data,
+                                markPoint : {
+                                    data : [
+                                        {type : 'max', name: '最大值'},
+                                        {type : 'min', name: '最小值'}
+                                    ]
+                                },
+                                markLine : {
+                                    data : [
+                                        {type : 'average', name: '平均值'},
+                                        { xAxis: 170 }
+                                    ]
+                                }
+                            }
+            ]
+        })
+}
+
 function drawLine(dom) {
 var myChart = echarts.init(document.getElementById(dom));
 
@@ -166,33 +191,5 @@ var option = {
 
 
 myChart.setOption(option);
-
-
-$.get('/echarts/data').done(function(data) {
-    //$("#stocks").html("<b>2333</b>")
-    //document.getElementById("stocks").innerHTML=data.data
-
-    myChart.setOption({
-        series : [
-            {
-                            name:'男性',
-                            type:'scatter',
-                            data: data.data,
-                            markPoint : {
-                                data : [
-                                    {type : 'max', name: '最大值'},
-                                    {type : 'min', name: '最小值'}
-                                ]
-                            },
-                            markLine : {
-                                data : [
-                                    {type : 'average', name: '平均值'},
-                                    { xAxis: 170 }
-                                ]
-                            }
-                        }
-        ]
-    })
-});
 
 }

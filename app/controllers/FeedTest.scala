@@ -1,6 +1,8 @@
 package controllers
 
 
+import java.util.Random
+
 import play.api.mvc._
 import akka.actor._
 import javax.inject._
@@ -11,6 +13,7 @@ import actors.DemoActor._
 import actors.DemoActor
 import play.api.libs.json.Json
 import akka.pattern.ask
+import play.api.libs.EventSource
 
 
 /**
@@ -22,10 +25,10 @@ class FeedTest @Inject() (system: ActorSystem) extends Controller {
 
   val demoActor = system.actorOf(DemoActor.props)
 
+  val (weightData, demoChannel) = Concurrent.broadcast[List[Double]]
 
-
-  val dataToJson = Enumeratee.map[List[List[Double]]] {
-    case (d) => Json.obj("data" -> d)
+  val dataToJson = Enumeratee.map[List[Double]] {
+    case (d) => Json.obj("data" -> d).as[String]
   }
 
   def controlActor() = Action.async {
@@ -36,8 +39,15 @@ class FeedTest @Inject() (system: ActorSystem) extends Controller {
   }
 
   def clickActor() = Action {
-    demoActor ! updateDemo
-    Ok("Ok")
+    val randomData =
+      List(new Random().nextDouble()*100, new Random().nextDouble()*10)
+    demoChannel.push(randomData)
+    println("data")
+    Ok(Json.obj("data" -> randomData))
+  }
+
+  def streamActor() = Action {
+    Ok.stream(weightData &> dataToJson &> EventSource()).as("text/event-stream")
   }
 
 }
