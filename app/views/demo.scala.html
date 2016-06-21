@@ -57,12 +57,22 @@
     </div>
 
     <script>
+
     var source=new EventSource("/echarts/testdata");
+
+
+    source.onopen = function() {
+        alert('connection is opened: '+source.readyState);
+    };
 
     source.onmessage=function(event)
     {
-        document.getElementById("test").innerHTML+=event.data
+        document.getElementById("stocks").innerHTML+=event.data;
         updateChart(event.data);
+    };
+
+    source.onerror = function() {
+        alert('connection error: ' + source.readyState);
     };
     </script>
 

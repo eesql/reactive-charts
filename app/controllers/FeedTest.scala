@@ -9,10 +9,10 @@ import javax.inject._
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.iteratee._
-import actors.DemoActor._
-import actors.DemoActor
+//import actors.DemoActor._
+//import actors.DemoActor
 import play.api.libs.json.Json
-import akka.pattern.ask
+//import akka.pattern.ask
 import play.api.libs.EventSource
 
 
@@ -20,21 +20,19 @@ import play.api.libs.EventSource
   * Created by chad on 6/19/2016.
   */
 
-@Singleton
-class FeedTest @Inject() (system: ActorSystem) extends Controller {
+//@Singleton
+class FeedTest extends Controller {
 
-  val demoActor = system.actorOf(DemoActor.props)
+  //val demoActor = system.actorOf(DemoActor.props)
 
   val (weightData, demoChannel) = Concurrent.broadcast[List[Double]]
 
   val dataToJson = Enumeratee.map[List[Double]] {
-    case (d) => Json.obj("data" -> d).as[String]
+    case (d) => "demo-data: "+Json.obj("data" -> d).as[String]+"\n\n"
   }
 
-  def controlActor() = Action.async {
-    (demoActor ? TestActor()).mapTo[List[List[Double]]].map { message =>
-      Ok(Json.obj("data" -> message))
-    }
+  def controlActor() = Action {
+    Ok
 
   }
 
@@ -47,7 +45,9 @@ class FeedTest @Inject() (system: ActorSystem) extends Controller {
   }
 
   def streamActor() = Action {
-    Ok.stream(weightData &> dataToJson &> EventSource()).as("text/event-stream")
+    Ok.stream(weightData &> dataToJson &> EventSource()).as(
+      "text/event-stream").withHeaders(("Cache-Control","no-cache"))
+
   }
 
 }
