@@ -9,6 +9,7 @@ import javax.inject._
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.iteratee._
+import play.api.libs.json.{JsString, JsValue}
 //import actors.DemoActor._
 //import actors.DemoActor
 import play.api.libs.json.Json
@@ -25,10 +26,10 @@ class FeedTest extends Controller {
 
   //val demoActor = system.actorOf(DemoActor.props)
 
-  val (weightData, demoChannel) = Concurrent.broadcast[List[Double]]
+  val (weightData, demoChannel) = Concurrent.broadcast[JsValue]
 
-  val dataToJson = Enumeratee.map[List[Double]] {
-    case (d) => "demo-data: "+Json.obj("data" -> d).as[String]+"\n\n"
+  val toStream = Enumeratee.map[JsValue] {
+    json:JsValue  => json.as[String]
   }
 
   def controlActor() = Action {
@@ -39,13 +40,13 @@ class FeedTest extends Controller {
   def clickActor() = Action {
     val randomData =
       List(new Random().nextDouble()*100, new Random().nextDouble()*10)
-    demoChannel.push(randomData)
+    demoChannel.push(Json.obj("data" -> randomData).as[JsValue])
     println("data")
     Ok(Json.obj("data" -> randomData))
   }
 
   def streamActor() = Action {
-    Ok.stream(weightData &> dataToJson &> EventSource()).as(
+    Ok.feed(weightData  &> EventSource()).as(
       "text/event-stream").withHeaders(("Cache-Control","no-cache"))
 
   }

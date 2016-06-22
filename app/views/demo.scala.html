@@ -58,27 +58,23 @@
 
     <script>
 
-    var source=new EventSource("/echarts/testdata");
-
-
-    source.onopen = function() {
-        alert('connection is opened: '+source.readyState);
-    };
-
-    source.onmessage=function(event)
-    {
-        document.getElementById("stocks").innerHTML+=event.data;
-        updateChart(event.data);
-    };
-
-    source.onerror = function() {
-        alert('connection error: ' + source.readyState);
-    };
     </script>
 
 
     <script type="text/javascript">
-       drawLine('test')
+       var myChart = echarts.init(document.getElementById('test'));
+
+       var jsonData = new Array();
+
+       drawLine(myChart);
+
+       var source=new EventSource("/echarts/testdata");
+       source.onmessage=function(event)
+        {
+        //document.getElementById("stocks").innerHTML+=event.data;
+        jsonData = updateChart(event.data, myChart, jsonData);
+        };
+
     </script>
 </body>
 </html>

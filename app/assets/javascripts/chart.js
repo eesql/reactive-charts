@@ -1,13 +1,19 @@
 // 基于准备好的dom，初始化echarts实例
 
-function updateChart(data) {
+function updateChart(data,myChart,jsonData) {
+
+        var json = JSON.parse(data.replace(/\[/,'"').replace(/\]/,'"')).data;
+
+        var chartData = jsonData
+        chartData.push(json.split(","));
+        document.getElementById("stocks").innerHTML=json;
 
         myChart.setOption({
             series : [
                 {
                                 name:'男性',
                                 type:'scatter',
-                                data: data.data,
+                                data: chartData,
                                 markPoint : {
                                     data : [
                                         {type : 'max', name: '最大值'},
@@ -22,11 +28,13 @@ function updateChart(data) {
                                 }
                             }
             ]
-        })
+        });
+
+        return chartData;
 }
 
-function drawLine(dom) {
-var myChart = echarts.init(document.getElementById(dom));
+function drawLine(myChart) {
+//var myChart = echarts.init(document.getElementById(dom));
 
 
 var option = {
