@@ -51,6 +51,10 @@ class FeedTest extends Controller {
 
   }
 
+
+  def dataTest() = Action {
+    Ok(Json.obj("userLabelId" -> 20))
+  }
 }
 
 //http://www.jdon.com/45515

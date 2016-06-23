@@ -15,3 +15,8 @@ GET     /echarts                    controllers.Echarts.demo
 GET     /echarts/data               controllers.Echarts.maleData
 GET     /echarts/testdata           controllers.FeedTest.streamActor
 GET     /echarts/democlick          controllers.FeedTest.clickActor
+GET     /echarts/demodata           controllers.FeedTest.dataTest
+
+
+## Map Dashboard visualisation
+GET     /dashboard01                controllers.DashboardV1.index
