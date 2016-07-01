@@ -20,3 +20,6 @@ GET     /echarts/demodata           controllers.FeedTest.dataTest
 
 ## Map Dashboard visualisation
 GET     /dashboard01                controllers.DashboardV1.index
+
+
+GET     /echarts/demodata2          controllers.FeedTest.feedDataTest

@@ -55,6 +55,16 @@ class FeedTest extends Controller {
   def dataTest() = Action {
     Ok(Json.obj("userLabelId" -> 20))
   }
+
+
+  def feedDataTest() = Action {
+    Ok(Json.obj(
+      "title" -> "地图测试",
+      "subtext" -> "畅途网",
+      "legend_data" -> List("2016"),
+      "map_data" -> List(List( Json.obj("name" -> "南京", "value" -> List(118.78,32.07,1000.0)) ))
+    ))
+  }
 }
 
 //http://www.jdon.com/45515

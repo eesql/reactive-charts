@@ -1,0 +1,6 @@
+{
+  title:"地图测试",
+  subtext:"畅途网",
+  legend_data: ["2016"],
+  map_data: [ {name:"南京",value:[118.78,32.07,1000]} ]
+}
