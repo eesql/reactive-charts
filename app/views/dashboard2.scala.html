@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<title>Home | A Visualization System Prototype of Security Monitoring Product</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" type="text/css" href='@routes.Assets.at("stylesheets/bootstrap.min.css")'>
+<link rel="stylesheet" type="text/css" href='@routes.Assets.at("stylesheets/style.css")'>
+
+<script src='@routes.Assets.at("javascripts/d3.v3.min.js")'></script>
+<script src='@routes.Assets.at("lib/jquery/jquery.min.js")'></script>
+
+<script src='@routes.Assets.at("javascripts/bootstrap.min.js")'></script>
+<script src='@routes.Assets.at("javascripts/vue.min.js")'></script>
+
+    <script src='@routes.Assets.at("javascripts/charts/scatter-map2.js")'></script>
+    <script src='@routes.Assets.at("javascripts/charts/dim-bar.js")'></script>
+    <script src='@routes.Assets.at("javascripts/charts/radar.js")'></script>
+    <script src='@routes.Assets.at("javascripts/charts/dyn-pie.js")'></script>
+    <script type='text/javascript' src='@routes.Assets.at("javascripts/echarts.min.js")'></script>
+    <script type='text/javascript' src='@routes.Assets.at("javascripts/china.js")'></script>
+
+    <script type="text/javascript">
+        //GET HBASE INTERFACE TEST DATA
+
+
+        $.get("/echarts/demodata").done(function(data) {
+            //alert(data.userLabelId);
+            //$("#sensor-moni-text").html("<h1>"+data.userLabelId+"</h1>");
+        });
+
+    </script>
+
+</head>
+<body id='table'>
+<div class='container'>
+<div class="col-sm-12 col-md-12">
+<h1>Changtu Data Vis System</h1>
+<p></p>
+</div>
+</div>
+
+<br>
+
+<div class='container'>
+<div class="col-sm-12 col-md-12">
+<h3>OFFLINE DATA</h3>
+</div>
+<div class="col-sm-12 col-md-4">
+<div class="panel panel-card">
+<div class="panel-title">
+<h5 class="no-margin m-b"></h5>
+</div>
+<div class="panel-body">
+<div id="sensor-moni-text" style="height:270px;">
+
+    <script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('sensor-moni-text'));
+
+    dynPie(myChart);
+
+    </script>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class='col-sm-12 col-md-8'>
+<div class="panel panel-card">
+<div class="panel-title">
+<h5 class='no-margin m-b'></h5>
+</div>
+<div class="panel-body">
+<div id="sensor-mem-area-d3" style="height:270px;"></div>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('sensor-mem-area-d3'));
+
+    dimBar(myChart);
+
+</script>
+
+
+
+
+<div class='col-sm-12 col-md-12'>
+<div class="panel panel-card">
+<div class="panel-title">
+<h5 class='no-margin m-b'>Sensor People Counting Monitor</h5>
+</div>
+<div class="panel-body">
+<div id="sensor-count-multi-d3" style="height:600px;">
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('sensor-count-multi-d3'));
+
+    //$.get('/echarts/demodata2').done(function(data) {
+    //  scatterMap(myChart, data);
+    //});
+
+    scatterMap2(myChart);
+
+</script>
+
+
+
+<div class='container'>
+<div class="col-sm-12 col-md-12">
+<h3>DOCKER PART</h3>
+</div>
+
+<div class='col-sm-12 col-md-4'>
+<div class="panel panel-card">
+<div class="panel-title">
+<h5 class='no-margin m-b'>Docker CPU Monitor</h5>
+</div>
+<div class="panel-body">
+<div id="docker-cpu-rect-d3" style="height:350px;"></div>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('docker-cpu-rect-d3'));
+
+    radarChart(myChart);
+
+</script>
+
+
+
+<div class='col-sm-12 col-md-8'>
+<div class="panel panel-card">
+<div class="panel-title">
+<h5 class='no-margin m-b'>Sensor Memory Monitor</h5>
+</div>
+<div class="panel-body">
+<div id="docker-mem-area-d3" style="height:350px;"></div>
+</div>
+</div>
+</div>
+
+</div>
+
+
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('docker-mem-area-d3'));
+
+    multiLine(myChart);
+
+</script>
+
+
+
+
+<div class='container'>
+<div class="col-sm-12 col-md-12">
+<h3>EXPERIMENT LAB</h3>
+</div>
+<div class="col-sm-12 col-md-12">
+<div class="panel panel-card">
+<div class='panel-title'>
+<h5 class='no-margin m-b'></h5>
+</div>
+<div id="line-map-echarts" class="panel-body" style="height:650px;" >
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div class='container'>
+<div class="col-sm-12 col-md-12">
+<h3>COMMENTS</h3>
+</div>
+<div class="col-sm-12 col-md-12">
+<div class="panel panel-card">
+<div class="panel-title">
+<h5 class='no-margin m-b'></h5>
+</div>
+<div class="panel-body">
+<div class="ds-thread" data-thread-key="ss-vis-component" data-url="http://hijiangtao.github.io/ss-vis-component" data-title="Home | A Visualization System Prototype of Security Monitoring Product" ></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"datablog"};
+(function() {
+var ds = document.createElement('script');
+ds.type = 'text/javascript';ds.async = true;
+ds.src = 'http://static.duoshuo.com/embed.js';
+ds.charset = 'UTF-8';
+(document.getElementsByTagName('head')[0]
+|| document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+</div>
+</div>
+</div>
+</div>
+
+<div class='container'>
+<div class="col-sm-12 col-md-12">
+<hr style='border: 1px solid white'>
+<footer>
+<p>
+</p>
+</footer>
+</div>
+</div>
+
+
+</body>
+</html>
