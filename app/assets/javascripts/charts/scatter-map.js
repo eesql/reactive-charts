@@ -1009,7 +1009,7 @@ function scatterMap2(myChart) {
     var option = {
         backgroundColor: '#404a59',
         title: {
-            text: '热点购票城市分布',
+            text: '',
             subtext: 'data from 畅途',
             sublink: 'http://www.changtu.com/',
             left: 'center',
@@ -1047,6 +1047,7 @@ function scatterMap2(myChart) {
                 }
             },
             roam: true,
+            zoom: 1.8,
             itemStyle: {
                 normal: {
                     areaColor: '#323c48',
@@ -1367,18 +1368,7 @@ function lineMap2(myChart) {
     [{name:'南宁市'},{name:'广州市',value:998}]
     ];
 
-    var huaian = [
-    [{name:'淮安市'},{name:'南京市',value:14665}],
-    [{name:'淮安市'},{name:'苏州市',value:4722}],
-    [{name:'淮安市'},{name:'徐州市',value:2514}],
-    [{name:'淮安市'},{name:'淮安市',value:2300}],
-    [{name:'淮安市'},{name:'上海市',value:2299}],
-    [{name:'淮安市'},{name:'无锡市',value:1573}],
-    [{name:'淮安市'},{name:'扬州市',value:1414}],
-    [{name:'淮安市'},{name:'连云港市',value:911}],
-    [{name:'淮安市'},{name:'泰州市',value:879}],
-    [{name:'淮安市'},{name:'宿迁市',value:853}]
-    ];
+
 
     var xiamen = [
     [{name:'厦门市'},{name:'泉州市',value:8307}],
@@ -1406,31 +1396,9 @@ function lineMap2(myChart) {
     [{name:'西安市'},{name:'十堰市',value:647}]
     ];
 
-    var zjtaizhou = [
-    [{name:'台州市'},{name:'杭州市',value:9133}],
-    [{name:'台州市'},{name:'台州市',value:4792}],
-    [{name:'台州市'},{name:'宁波市',value:3741}],
-    [{name:'台州市'},{name:'金华市',value:3306}],
-    [{name:'台州市'},{name:'上海市',value:1937}],
-    [{name:'台州市'},{name:'温州市',value:1626}],
-    [{name:'台州市'},{name:'绍兴市',value:1038}],
-    [{name:'台州市'},{name:'丽水市',value:613}],
-    [{name:'台州市'},{name:'苏州市',value:383}],
-    [{name:'台州市'},{name:'嘉兴市',value:254}]
-    ];
 
-    var jstaizhou = [
-    [{name:'泰州市'},{name:'上海市',value:6985}],
-    [{name:'泰州市'},{name:'南京市',value:5713}],
-    [{name:'泰州市'},{name:'苏州市',value:4941}],
-    [{name:'泰州市'},{name:'无锡市',value:3148}],
-    [{name:'泰州市'},{name:'常州市',value:1266}],
-    [{name:'泰州市'},{name:'泰州市',value:1070}],
-    [{name:'泰州市'},{name:'扬州市',value:1062}],
-    [{name:'泰州市'},{name:'南通市',value:1014}],
-    [{name:'泰州市'},{name:'徐州市',value:866}],
-    [{name:'泰州市'},{name:'淮安市',value:761}]
-    ];
+
+
 
     var convertData = function (data) {
         var res = [];
@@ -1455,9 +1423,9 @@ function lineMap2(myChart) {
     '#e0e0e0', '#00ffff', '#f9f900', '#fdd283','#be77ff'];
     var series = [];
     [['南京市', nanjing], ['广州市', guangzhou], ['杭州市', hangzhou],
-    ['汉中市', hanzhong], ['南宁市', nanning], ['淮安市', huaian],
-    ['厦门市', xiamen], ['西安市', xian], ['台州市', zjtaizhou],
-    ['泰州市', jstaizhou]].forEach(function (item, i) {
+    ['汉中市', hanzhong], ['南宁市', nanning],
+    ['厦门市', xiamen], ['西安市', xian]
+    ].forEach(function (item, i) {
         series.push({
             name: item[0] + ' Top10',
             type: 'lines',
@@ -1550,17 +1518,17 @@ function lineMap2(myChart) {
             orient: 'vertical',
             top: 'bottom',
             left: 'right',
+            selectedMode: 'single',
             data:['南京市 Top10', '广州市 Top10', '杭州市 Top10',
-            '汉中市 Top10', '南宁市 Top10', '淮安市 Top10',
-            '厦门市 Top10', '西安市 Top10', '台州市 Top10',
-            '泰州市 Top10', '宁波市 Top10', '福州市 Top10',
-            '三明市 Top10', '绍兴市 Top10', '上海市 Top10'],
+            '汉中市 Top10', '南宁市 Top10',
+            '厦门市 Top10', '西安市 Top10'],
             textStyle: {
                 color: '#fff'
             }
         },
         geo: {
             map: 'china',
+            zoom: 1.5,
             label: {
                 emphasis: {
                     show: false

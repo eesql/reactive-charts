@@ -17,9 +17,9 @@ import scala.Option;
  */
 public class Application extends Controller {
 
-    public Result index() {
-        return ok(views.html.index.render());
-    }
+    //public Result index() {
+    //    return ok(views.html.index.render());
+    //}
 
     public WebSocket<JsonNode> ws() {
         return new WebSocket<JsonNode>() {

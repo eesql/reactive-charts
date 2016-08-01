@@ -4,16 +4,14 @@ package controllers
 import java.util.Random
 
 import play.api.mvc._
-import akka.actor._
-import javax.inject._
+
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.iteratee._
-import play.api.libs.json.{JsString, JsValue}
-//import actors.DemoActor._
-//import actors.DemoActor
+import play.api.libs.json.JsValue
+
 import play.api.libs.json.Json
-//import akka.pattern.ask
+
 import play.api.libs.EventSource
 
 

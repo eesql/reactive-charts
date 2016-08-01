@@ -42,7 +42,7 @@ function radarChart(myChart) {
     var option = {
         backgroundColor: '#161627',
         title: {
-            text: '购票量节假日分布',
+            text: '',
             subtext: '',
             sublink: 'http://www.changtu.com/',
             left: 'center',

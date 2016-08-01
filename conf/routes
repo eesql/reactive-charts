@@ -2,7 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                           controllers.Application.index
+
 GET     /ws                         controllers.Application.ws
 GET     /ws2                        controllers.Application.ws2
 GET     /sentiment/:symbol          controllers.StockSentiment.get(symbol)
@@ -24,3 +24,10 @@ GET     /dashboard02                controllers.DashboardV2.index
 
 
 GET     /echarts/demodata2          controllers.FeedTest.feedDataTest
+
+
+
+GET     /dashboard03                controllers.DashboardV3.index
+GET     /realtime                   controllers.RealtimeBoard.index
+GET     /sse/update-order           controllers.RealtimeBoard.updateDailyOrder
+GET     /sse/test                   controllers.RealtimeBoard.test

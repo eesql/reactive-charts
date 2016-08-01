@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>获得服务器更新</h1>
+
+
+
+<div ><span id="result"></span>
+
+  <script type="text/javascript">
+
+  function updateDailyOrders() {
+    var source=new EventSource("http://127.0.0.1:9001/orders");
+
+    source.onopen = function() { alert("open");};
+
+    source.onmessage=function(event)
+      {
+        var d = JSON.parse(event.data);
+      document.getElementById("result").innerHTML=d[0][1];
+      };
+  };
+
+  updateDailyOrders();
+
+  </script>
+</div>
+
+
+
+</body>
+</html>
