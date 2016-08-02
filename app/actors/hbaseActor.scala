@@ -1,13 +1,12 @@
 package actors
 
+
+
 import akka.actor._
 
 import scala.concurrent.duration._
-import scala.concurrent.duration.Duration
-import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.libs.Akka
-
 import akka.util.Timeout
 import utils.HBaseTables
 
@@ -26,20 +25,19 @@ object HBaseActor {
 
 
   case class DailyOrder()
-  case class updateDemo()
+  case class updateData()
 }
 
 class HBaseActor extends Actor {
   import HBaseActor._
   implicit val timeout: Timeout = 5.seconds
-  //val tick = context.system.scheduler.schedule(Duration.Zero, 1.seconds, self, updateDemo)
 
 
   def receive = {
     case DailyOrder() =>
-      sender() ! Json.toJson( HBaseTables.getHDailyOrders("2016-07-28") )
-    case updateDemo() =>
-      sender() ! DailyOrder()
+      sender() ! Json.toJson( HBaseTables.getHDailyOrders(java.time.LocalDate.now.toString) )
+
   }
+
 
 }

@@ -44,7 +44,9 @@ object HBaseTables {
           Bytes.toString( r.getValue("p".getBytes, "order".getBytes)
           ))
       )
-      results.toList
+
+      //未找到对应ROW KEY时返回空数据标识
+      if (results.isEmpty) { List(List("NaN", "NaN")) } else { results.toList }
     }
     finally {
       scanner.close()
