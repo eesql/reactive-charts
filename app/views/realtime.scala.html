@@ -237,7 +237,15 @@
             </div>
             <script type="text/javascript">
             var myChart = echarts.init(document.getElementById('real-area'));
-            realArea(myChart);
+
+            var source = new EventSource("/sse/min-order");
+            source.onmessage=function(event)
+            {
+              var d = JSON.parse(event.data);
+              //document.getElementById('real-area').innerHTML=JSON.stringify( getMinChannelOrders(d) );
+              realArea(myChart,getMinChannelOrders(d));
+            };
+
 
             $(window).resize(function(){ myChart.resize(); })
             </script>

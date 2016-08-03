@@ -3,7 +3,7 @@ package utils
 import org.apache.hadoop.hbase.TableName
 import org.apache.hadoop.hbase.client.{Put, Scan}
 import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp
-import org.apache.hadoop.hbase.filter.{BinaryComparator, RowFilter}
+import org.apache.hadoop.hbase.filter.{BinaryComparator, RowFilter, SubstringComparator}
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.util.Bytes
 
@@ -24,16 +24,35 @@ object HBaseTables {
 
   def getHDailyOrders(today:String):List[List[String]] = {
 
+    //setup filter
+    val rowFilter = new RowFilter(CompareOp.EQUAL,
+      new BinaryComparator(Bytes.toBytes(today)))
+
+    getRealtimeOrders(rowFilter)
+  }
+
+
+  /** 查询分钟级别渠道订单指标 **/
+  def getHMinOrders(today:String):List[List[String]] = {
+
+    //setup filter
+    val rowFilter = new RowFilter(CompareOp.EQUAL,
+      new SubstringComparator(today+" "))
+
+    getRealtimeOrders(rowFilter)
+  }
+
+
+  /** 根据不同filter查询test_realtime订单数据 */
+  def getRealtimeOrders( filter:RowFilter):List[List[String]] = {
+
     val table = HBaseConfig.conn.getTable(HBaseTables.testTable)
 
     //scan data
     val scan = new Scan()
     scan.addColumn("p".getBytes, "order".getBytes)
 
-    //setup filter
-    val rowFilter = new RowFilter(CompareOp.EQUAL,
-      new BinaryComparator(Bytes.toBytes(today)))
-    scan.setFilter(rowFilter)
+    scan.setFilter(filter)
 
     val scanner = table.getScanner(scan)
 
@@ -53,4 +72,7 @@ object HBaseTables {
     }
 
   }
+
+
+
 }
