@@ -31,3 +31,4 @@ GET     /dashboard03                controllers.DashboardV3.index
 GET     /realtime                   controllers.RealtimeBoard.index
 GET     /sse/update-order           controllers.RealtimeBoard.updateDailyOrder
 GET     /sse/test                   controllers.RealtimeBoard.test
+GET     /sse/min-order              controllers.RealtimeChart.updateMinOrder
