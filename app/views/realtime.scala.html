@@ -157,10 +157,9 @@
             <div class="info-box">
               <span class="info-box-icon bg-aqua"><i class="fa fa-envelope-o"></i></span>
               <div class="info-box-content">
-                <span class="info-box-text">Messages</span>
+                <span class="info-box-text">支付票数</span>
                 <span class="info-box-number" id="sse-daily-order"></span>
-                <script src='@routes.Assets.at("javascripts/realtime.js")'></script>
-                <script>updateDailyOrders("sse-daily-order");</script>
+
               </div><!-- /.info-box-content -->
             </div><!-- /.info-box -->
           </div>
@@ -172,8 +171,8 @@
             <div class="info-box">
               <span class="info-box-icon bg-green"><i class="fa fa-flag-o"></i></span>
               <div class="info-box-content">
-                <span class="info-box-text">Bookmarks</span>
-                <span class="info-box-number">410</span>
+                <span class="info-box-text">当日PV</span>
+                <span class="info-box-number" id="sse-daily-pv"></span>
               </div><!-- /.info-box-content -->
             </div><!-- /.info-box -->
           </div>
@@ -182,12 +181,16 @@
             <div class="info-box">
               <span class="info-box-icon bg-yellow"><i class="fa fa-files-o"></i></span>
               <div class="info-box-content">
-                <span class="info-box-text">Uploads</span>
-                <span class="info-box-number">13,648</span>
+                <span class="info-box-text">当日App</span>
+                <span class="info-box-number" id="sse-daily-uv"></span>
               </div><!-- /.info-box-content -->
             </div><!-- /.info-box -->
           </div>
           <!-- col end -->
+
+        <script src='@routes.Assets.at("javascripts/realtime.js")'></script>
+        <script>updateDailyKPI("sse-daily-order","sse-daily-pv","sse-daily-uv");</script>
+
           <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="info-box">
               <span class="info-box-icon bg-red"><i class="fa fa-star-o"></i></span>
@@ -207,7 +210,7 @@
         <div class="col-md-12">
           <div class="box box-warning">
             <div class="box-header with-border">
-              <h3 class="box-title">Monthly Recap Report</h3>
+              <h3 class="box-title">实时订单提交情况</h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -228,11 +231,11 @@
             </div>
             <!-- /.box-header -->
 
-            <!-- 实时数据折线图 -->
+            <!-- 实时数据区域图 -->
             <script type='text/javascript' src='@routes.Assets.at("javascripts/echarts.min.js")'></script>
             <script type='text/javascript' src='@routes.Assets.at("javascripts/china.js")'></script>
             <script src='@routes.Assets.at("javascripts/charts/realtime-chart.js")'></script>
-            <div>
+            <div class="box-body">
               <div class="flot-text" id="real-area" style="position: relative;height:430px;" ></div>
             </div>
             <script type="text/javascript">
@@ -246,8 +249,6 @@
               realArea(myChart,getMinChannelOrders(d));
             };
 
-
-            $(window).resize(function(){ myChart.resize(); })
             </script>
 
 
@@ -260,9 +261,9 @@
 
       <div class="row"><!-- Fifth Row -->
         <div class="col-md-12">
-          <div class="box">
+          <div class="box box-danger">
             <div class="box-header with-border">
-              <h3 class="box-title">Monthly Recap Report</h3>
+              <h3 class="box-title">实时Web访问情况</h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -284,10 +285,21 @@
             <!-- /.box-header -->
 
 
-            <div id="demo-map2" style="height:600px;" >
-
+            <!-- 实时数据折线图 -->
+            <div class="box-body">
+              <div class="flot-text" id="real-line" style="height:430px;" ></div>
             </div>
+            <script type="text/javascript">
+            var myChart2 = echarts.init(document.getElementById('real-line'));
 
+            var source2 = new EventSource("/sse/real-pv");
+            source2.onmessage=function(event)
+            {
+              var d = JSON.parse(event.data);
+              //document.getElementById('real-line').innerHTML=JSON.stringify( getRealPVData(d,'data'));
+              realLine(myChart2,getRealPVData(d,'data'));
+            };
+            </script>
           </div>
         </div>
       </div><!-- Row End -->

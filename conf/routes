@@ -29,6 +29,7 @@ GET     /echarts/demodata2          controllers.FeedTest.feedDataTest
 
 GET     /dashboard03                controllers.DashboardV3.index
 GET     /realtime                   controllers.RealtimeBoard.index
-GET     /sse/update-order           controllers.RealtimeBoard.updateDailyOrder
+GET     /sse/update-kpi             controllers.RealtimeBoard.updateDailyKPI
 GET     /sse/test                   controllers.RealtimeBoard.test
 GET     /sse/min-order              controllers.RealtimeChart.updateMinOrder
+GET     /sse/real-pv                controllers.RealtimeChart.updateRealPV

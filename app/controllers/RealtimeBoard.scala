@@ -36,11 +36,11 @@ class RealtimeBoard  extends Controller{
   }
 
   def test = Action {
-    Ok( Json.toJson( HBaseTables.getHDailyOrders("2016-07-19") ) )
+    Ok( Json.toJson( HBaseTables.getRealtimePV("20160810") ) )
   }
 
   // send event to get hbase data
-  def updateDailyOrder = Action { req=>
+  def updateDailyKPI = Action { req=>
 
     /**
     (hbaseActor ? DailyOrder()).mapTo[JsValue].map {
@@ -67,7 +67,7 @@ class RealtimeBoard  extends Controller{
     val (data, channel) = Concurrent.broadcast[JsValue]
 
     def addData():Unit = {
-      channel.push( Json.toJson( HBaseTables.getHDailyOrders(java.time.LocalDate.now.toString)) )
+      channel.push( Json.toJson( HBaseTables.getDailyKPI(java.time.LocalDate.now.toString)) )
     }
   }
 

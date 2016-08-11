@@ -1,16 +1,14 @@
 
-/** 更新当日累积支付完成票数指标 **/
-function updateDailyOrders(docId) {
-    document.getElementById(docId).innerHTML=1;
-    var source=new EventSource("/sse/update-order");
+/** 更新当日累积支付完成票数指标,以及pv等所有kpi指标 **/
+function updateDailyKPI(id1,id2,id3) {
 
-
+    var source=new EventSource("/sse/update-kpi");
     source.onmessage=function(event)
       {
         var d = JSON.parse(event.data);
-        document.getElementById(docId).innerHTML=d;
-        document.getElementById(docId).innerHTML=d[0][1];
-
+        document.getElementById(id1).innerHTML=d[0][1];
+        document.getElementById(id2).innerHTML=d[1][1];
+        document.getElementById(id3).innerHTML=d[1][2];
       };
  };
 
@@ -32,7 +30,7 @@ function getMinChannelOrders(data) {
 
 
     var cdata = {
-        title:"实时提交订单通道情况",
+        title:"",
         legend:['PC','iOS','Touch','Android','WeChat','AliTrip'],
         xaxis:['00','01','02','03','04','05','06','07','08','09','10','11','12',
                '13','14','15','16','17','18','19','20','21','22','23'],
@@ -67,3 +65,21 @@ function getMinChannelOrders(data) {
 
     return cdata;
  };
+
+
+/** 处理实时pv指标数据格式 **/
+function getRealPVData(data,series) {
+    var jdata = {
+        seriesName:series,
+        date:[],
+        data:[]
+    };
+
+    for (var i=0; i < data.length; i++) {
+        jdata.data.push(data[i][1]);
+
+        jdata.date.push(data[i][0].substr(15));
+    };
+
+    return jdata;
+}

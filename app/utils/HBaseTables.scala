@@ -14,6 +14,7 @@ import scala.collection.JavaConverters._
   */
 object HBaseTables {
   val testTable = TableName.valueOf("test_realtime")
+  val visitRealTable = TableName.valueOf("behavior_visit_realtime")
 
   def convertTestOrder(triple: (String, Int)) = {
     val p = new Put(Bytes.toBytes(triple._1))
@@ -21,14 +22,28 @@ object HBaseTables {
     (new ImmutableBytesWritable, p)
   }
 
+  /**
+    * 获取整合实时kpi数据,包括订单指标和当日累积pv uv指标
+    */
+  def getDailyKPI(today:String):List[List[String]] = {
+    val orderKPI = getHDailyOrders(today)
+    val pvKPI = getDailyPV(today.replace("-",""))
+
+    List(orderKPI(0) , pvKPI(0))
+  }
+
 
   def getHDailyOrders(today:String):List[List[String]] = {
 
     //setup filter
     val rowFilter = new RowFilter(CompareOp.EQUAL,
-      new BinaryComparator(Bytes.toBytes(today)))
+      new SubstringComparator(today+" "))
 
-    getRealtimeOrders(rowFilter)
+    val results = getRealtimeOrders(rowFilter)
+
+    if (results(0)(1) != "NaN") {
+      List(List(today, results.map(x => x(1).toInt).sum[Int].toString))
+    } else { results }
   }
 
 
@@ -46,7 +61,7 @@ object HBaseTables {
   /** 根据不同filter查询test_realtime订单数据 */
   def getRealtimeOrders( filter:RowFilter):List[List[String]] = {
 
-    val table = HBaseConfig.conn.getTable(HBaseTables.testTable)
+    val table = HBaseConfig.conn.getTable(testTable)
 
     //scan data
     val scan = new Scan()
@@ -74,5 +89,64 @@ object HBaseTables {
   }
 
 
+  /** 获取当日累积pv app打开指标  **/
+  def getDailyPV(today:String):List[List[String]] = {
+    val table = HBaseConfig.conn.getTable(visitRealTable)
+
+    //setup filter
+    val rowFilter = new RowFilter(CompareOp.EQUAL,
+      new BinaryComparator(Bytes.toBytes(today)))
+
+    val scan = new Scan()
+    scan.addColumn("index".getBytes, "pv".getBytes)
+    scan.addColumn("index".getBytes, "app".getBytes)
+
+    scan.setFilter(rowFilter)
+
+    val scanner = table.getScanner(scan)
+
+    try {
+      val results = scanner.iterator().asScala.map( r =>
+        List(Bytes.toString(r.getRow()),
+          Bytes.toString(r.getValue("index".getBytes, "pv".getBytes)),
+          Bytes.toString(r.getValue("index".getBytes, "app".getBytes))
+        )
+      )
+      //未找到对应ROW KEY时返回空数据标识
+      if (results.isEmpty) { List(List("NaN", "NaN", "NaN")) } else { results.toList }
+    }
+    finally {
+      scanner.close()
+    }
+  }
+
+  /** 获取实时pv指标  **/
+  def getRealtimePV(today:String):List[List[String]] = {
+    val table = HBaseConfig.conn.getTable(visitRealTable)
+
+    //setup filter
+    val rowFilter = new RowFilter(CompareOp.EQUAL,
+      new SubstringComparator("PERIOD_"+today.replace("-","")))
+
+    val scan = new Scan()
+    scan.addColumn("index".getBytes, "pv".getBytes)
+
+    scan.setFilter(rowFilter)
+
+    val scanner = table.getScanner(scan)
+
+    try {
+      val results = scanner.iterator().asScala.map( r =>
+        List(Bytes.toString(r.getRow()),
+          Bytes.toString(r.getValue("index".getBytes, "pv".getBytes))
+        )
+      )
+      //未找到对应ROW KEY时返回空数据标识
+      if (results.isEmpty) { List(List("NaN", "NaN", "NaN")) } else { results.toList }
+    }
+    finally {
+      scanner.close()
+    }
+  }
 
 }

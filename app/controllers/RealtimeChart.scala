@@ -28,6 +28,7 @@ class RealtimeChart  extends Controller{
 
   val tick = Akka.system.scheduler.schedule(Duration.Zero, 2.seconds ) {
     Pool.addData()
+    PVPool.addData()
   }
 
 
@@ -56,6 +57,25 @@ class RealtimeChart  extends Controller{
       "text/event-stream").withHeaders(("Cache-Control","no-cache"))
   }
 
+
+  // send event to get hbase data
+  def updateRealPV = Action { req=>
+
+    /**
+    (hbaseActor ? DailyOrder()).mapTo[JsValue].map {
+      message => Ok.chunked(Enumerator(message)
+        &> connDeathWatch(req.remoteAddress)
+        &> EventSource()).as(
+        "text/event-stream").withHeaders(("Cache-Control","no-cache"))
+    }**/
+
+    Ok.feed(PVPool.data
+      &> connDeathWatch(req.remoteAddress)
+      &> EventSource()).as(
+      "text/event-stream").withHeaders(("Cache-Control","no-cache"))
+  }
+
+
   /** Enumeratee for detecting disconnect of SSE stream */
   def connDeathWatch(addr: String): Enumeratee[JsValue, JsValue] =
     Enumeratee.onIterateeDone{ () => println(addr + " - SSE disconnected") }
@@ -68,6 +88,16 @@ class RealtimeChart  extends Controller{
 
     def addData():Unit = {
       channel.push( Json.toJson( HBaseTables.getHMinOrders(java.time.LocalDate.now.toString)) )
+    }
+  }
+
+  /** object hold updated hbase data **/
+  object PVPool {
+
+    val (data, channel) = Concurrent.broadcast[JsValue]
+
+    def addData():Unit = {
+      channel.push( Json.toJson( HBaseTables.getRealtimePV(java.time.LocalDate.now.toString)) )
     }
   }
 
